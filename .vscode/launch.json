@@ -20,6 +20,10 @@
       "module": "jupyterlab.labapp",
       "presentation": {
         "hidden": true
+      },
+      "env": {
+        "SPARK_HOME": "/Users/mhilmy/spark-3.5.0-SNAPSHOT-bin-custom-spark",
+        "SPARK_CONNECT_PACKAGE": "org.apache.spark:spark-connect_2.13:3.5.0-SNAPSHOT --repositories https://repository.apache.org/snapshots/"
       }
     },
     {
