@@ -5,7 +5,7 @@ import glob
 import socket
 from string import Formatter
 from enum import Enum
-from spark_connect_labextension.config import SPARK_HOME, SPARK_CONNECT_PORT, SPARK_CONNECT_PACKAGE
+from spark_connect_labextension.config import SPARK_HOME, SPARK_CONNECT_PORT, SPARK_CONNECT_PACKAGE, LISTENER_JAR_PATH, LISTENER_CLASS_NAME, ENABLE_JOB_MONITORING
 
 
 class ClusterStatus(Enum):
@@ -37,6 +37,18 @@ class _SparkConnectCluster:
 
         options['spark.connect.grpc.binding.port'] = str(self.get_port())
         options['spark.ui.proxyRedirectUri'] = "/"
+
+        if ENABLE_JOB_MONITORING:
+            if 'spark.driver.extraClassPath' in options:
+                options['spark.driver.extraClassPath'] += ',' + LISTENER_JAR_PATH
+            else:
+                options['spark.driver.extraClassPath'] = LISTENER_JAR_PATH
+
+            if 'spark.extraListeners' in options:
+                options['spark.extraListeners'] += ',' + LISTENER_CLASS_NAME
+            else:
+                options['spark.extraListeners'] = LISTENER_CLASS_NAME
+
         config_args = self.get_config_args(options)
         run_script = f"{SPARK_HOME}/sbin/start-connect-server.sh --packages {SPARK_CONNECT_PACKAGE} {config_args}"
         retcode = subprocess.Popen(run_script, shell=True, env=env_variables).wait()
