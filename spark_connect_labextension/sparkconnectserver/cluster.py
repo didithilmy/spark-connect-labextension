@@ -40,7 +40,7 @@ class _SparkConnectCluster:
 
         if ENABLE_JOB_MONITORING:
             if 'spark.driver.extraClassPath' in options:
-                options['spark.driver.extraClassPath'] += ',' + LISTENER_JAR_PATH
+                options['spark.driver.extraClassPath'] += ':' + LISTENER_JAR_PATH
             else:
                 options['spark.driver.extraClassPath'] = LISTENER_JAR_PATH
 
