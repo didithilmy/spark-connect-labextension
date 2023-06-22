@@ -1,6 +1,6 @@
 import { ILabShell, JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
-import { INotebookTracker } from '@jupyterlab/notebook';
+import { INotebookTracker, NotebookActions } from '@jupyterlab/notebook';
 import { MainAreaWidget } from '@jupyterlab/apputils';
 import { requestAPI } from './handler';
 import SidebarPanel from './widgets/SidebarPanel';
@@ -123,6 +123,14 @@ function addNotebookListener(labShell: ILabShell, notebookTracker: INotebookTrac
   };
 
   labShell.currentChanged.connect(currentTabChanged);
+  NotebookActions.executionScheduled.connect((_, { notebook, cell }) => {
+    cell.model.deleteMetadata('sparkconnect.executed');
+    cell.model.setMetadata('sparkconnect.executionScheduled', new Date().getTime());
+  });
+
+  NotebookActions.executed.connect((_, { notebook, cell }) => {
+    cell.model.setMetadata('sparkconnect.executed', new Date().getTime());
+  });
 }
 
 async function loadExtensionState() {
