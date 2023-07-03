@@ -19,9 +19,10 @@ class _SparkConnectCluster:
         self.cluster_name = None
         self.config_bundles = []
         self.extra_config = {}
+        self.options = {}
         self.started = False
 
-    def start(self, cluster_name: str, options: dict = {}, envs: dict = None, config_bundles: dict = [], extra_config: dict = {}):
+    def start(self, cluster_name: str, options: dict = {}, envs: dict = None, config_bundles: dict = [], extra_config: dict = {}, pre_script: str = None):
         print("Starting Spark Connect server...")
         self.started = True
         self.cluster_name = cluster_name
@@ -34,6 +35,8 @@ class _SparkConnectCluster:
         env_variables['SPARK_HOME'] = SPARK_HOME
         env_variables['SPARK_LOG_DIR'] = self.tmpdir.name
         print("Spark log dir", self.tmpdir.name)
+
+        self.options = options
 
         options['spark.connect.grpc.binding.port'] = str(self.get_port())
         options['spark.ui.proxyRedirectUri'] = "/"
@@ -50,7 +53,11 @@ class _SparkConnectCluster:
                 options['spark.extraListeners'] = LISTENER_CLASS_NAME
 
         config_args = self.get_config_args(options)
+
         run_script = f"{SPARK_HOME}/sbin/start-connect-server.sh --packages {SPARK_CONNECT_PACKAGE} {config_args}"
+        if pre_script:
+            run_script = pre_script + ' && ' + run_script
+        
         retcode = subprocess.Popen(run_script, shell=True, env=env_variables).wait()
         if retcode != 0:
             raise Exception("Cannot start Spark Connect server")
@@ -87,6 +94,9 @@ class _SparkConnectCluster:
     
     def get_port(self) -> int:
         return SPARK_CONNECT_PORT
+    
+    def get_options(self) -> dict:
+        return self.options
     
     def is_connect_server_running(self) -> bool:
         run_script = f"{SPARK_HOME}/sbin/spark-daemon.sh status org.apache.spark.sql.connect.service.SparkConnectServer 1"

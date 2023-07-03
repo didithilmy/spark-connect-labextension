@@ -1,0 +1,2 @@
+export SPARK_DEMO_OPTION_CLUSTER_NAME=analytix
+export SPARK_DEMO_OPTION_PWD=`pwd`/analytix

@@ -1,0 +1,288 @@
+{
+    "bundled_options": {
+      "LongRunningAnalysis": {
+        "options": [
+          {
+            "name": "spark.python.worker.reuse",
+            "value": "false"
+          }
+        ],
+        "cluster_filter": [ "k8s" ],
+        "spark_version_filter": []
+      },
+      "MemoryIntensive": {
+        "options": [
+          {
+            "name": "spark.executor.cores",
+            "value": "2"
+          },
+          {
+            "name": "spark.executor.memory",
+            "value": "4g"
+          },
+          {
+            "name": "spark.kubernetes.memoryOverheadFactor",
+            "value": "0.4"
+          }
+        ],
+        "cluster_filter": [ "k8s" ],
+        "spark_version_filter": []
+      },
+      "ComputeIntensive": {
+        "options": [
+          {
+            "name": "spark.executor.cores",
+            "value": "4"
+          },
+          {
+            "name": "spark.executor.memory",
+            "value": "6g"
+          },
+          {
+            "name": "spark.kubernetes.memoryOverheadFactor",
+            "value": "0.1"
+          }
+        ],
+        "cluster_filter": [ "k8s" ],
+        "spark_version_filter": []
+      },
+      "NXCALS": {
+        "options": [
+          {
+            "name": "spark.shuffle.service.enabled",
+            "value": "true"
+          },
+          {
+            "name": "spark.dynamicAllocation.enabled",
+            "value": "true"
+          },
+          {
+            "name": "spark.dynamicAllocation.minExecutors",
+            "value": "1"
+          },
+          {
+            "name": "spark.dynamicAllocation.maxExecutors",
+            "value": "10"
+          },
+          {
+            "name": "spark.driver.extraJavaOptions",
+            "concatenate": " ",
+            "value": "-Dservice.url=https://cs-ccr-nxcals5.cern.ch:19093,https://cs-ccr-nxcals5.cern.ch:19094,https://cs-ccr-nxcals6.cern.ch:19093,https://cs-ccr-nxcals6.cern.ch:19094,https://cs-ccr-nxcals7.cern.ch:19093,https://cs-ccr-nxcals7.cern.ch:19094,https://cs-ccr-nxcals8.cern.ch:19093,https://cs-ccr-nxcals8.cern.ch:19094"
+          },
+          {
+            "name": "spark.sql.caseSensitive",
+            "value": "true"
+          },
+          {
+            "name": "spark.sql.execution.arrow.pyspark.enabled",
+            "value": "true"
+          },
+          {
+            "name": "spark.yarn.appMasterEnv.JAVA_HOME",
+            "value": "{JAVA_HOME}"
+          },
+          {
+            "name": "spark.executorEnv.JAVA_HOME",
+            "value": "{JAVA_HOME}"
+          },
+          {
+            "name": "spark.sql.parquet.enableNestedColumnVectorizedReader",
+            "value": "true"
+          }
+        ],
+        "cluster_filter": [ "nxcals", "hadoop-nxcals" ],
+        "spark_version_filter": []
+      },
+      "NXCALS_TESTBED": {
+        "options": [
+          {
+            "name": "spark.shuffle.service.enabled",
+            "value": "true"
+          },
+          {
+            "name": "spark.dynamicAllocation.enabled",
+            "value": "true"
+          },
+          {
+            "name": "spark.dynamicAllocation.minExecutors",
+            "value": "1"
+          },
+          {
+            "name": "spark.dynamicAllocation.maxExecutors",
+            "value": "10"
+          },
+          {
+            "name": "spark.driver.extraJavaOptions",
+            "concatenate": " ",
+            "value": "-Dservice.url=https://cs-ccr-nxcalstb1.cern.ch:19093,https://cs-ccr-testbed2.cern.ch:19093,https://cs-ccr-testbed3.cern.ch:19093"
+          },
+          {
+            "name": "spark.sql.caseSensitive",
+            "value": "true"
+          },
+          {
+            "name": "spark.sql.execution.arrow.pyspark.enabled",
+            "value": "true"
+          },
+          {
+            "name": "spark.yarn.appMasterEnv.JAVA_HOME",
+            "value": "{JAVA_HOME}"
+          },
+          {
+            "name": "spark.executorEnv.JAVA_HOME",
+            "value": "{JAVA_HOME}"
+          },
+          {
+            "name": "spark.sql.parquet.enableNestedColumnVectorizedReader",
+            "value": "true"
+          }
+        ],
+        "cluster_filter": [ "nxcals", "hadoop-nxcals" ],
+        "spark_version_filter": []
+      },
+      "CMSSpark": {
+        "options": [
+          {
+            "name": "spark.jars",
+            "concatenate": ",",
+            "value": "/eos/project/s/swan/public/CMSSpark/avro-mapred.jar,/eos/project/s/swan/public/CMSSpark/spark-csv-assembly-1.4.0.jar,/eos/project/s/swan/public/CMSSpark/spark-examples-1.6.0-cdh5.7.6-hadoop2.6.0-cdh5.7.6.jar"
+          },
+          {
+            "name": "spark.submit.pyFiles",
+            "concatenate": ",",
+            "value": "/eos/project/s/swan/public/CMSSpark/CMSSpark.zip"
+          },
+          {
+            "name": "spark.jars.packages",
+            "concatenate": ",",
+            "value": "com.databricks:spark-avro_2.11:4.0.0"
+          }
+        ],
+        "cluster_filter": [ "analytix", "hadoop-qa" ],
+        "spark_version_filter": []
+      },
+      "SparkMetrics": {
+        "options": [
+          {
+            "name": "spark.cern.grafana.url",
+            "value": "https://hadoop-grafana.web.cern.ch/d/1/sparkmetrics"
+          },
+          {
+            "name": "spark.metrics.conf.driver.sink.graphite.class",
+            "value": "org.apache.spark.metrics.sink.GraphiteSink"
+          },
+          {
+            "name": "spark.metrics.conf.executor.sink.graphite.class",
+            "value": "org.apache.spark.metrics.sink.GraphiteSink"
+          },
+          {
+            "name": "spark.metrics.conf.*.sink.graphite.host",
+            "value": "dbod-sparkm.cern.ch"
+          },
+          {
+            "name": "spark.metrics.conf.*.sink.graphite.port",
+            "value": "8292"
+          },
+          {
+            "name": "spark.metrics.conf.*.sink.graphite.period",
+            "value": "10"
+          },
+          {
+            "name": "spark.metrics.conf.*.sink.graphite.unit",
+            "value": "seconds"
+          },
+          {
+            "name": "spark.metrics.conf.*.sink.graphite.prefix",
+            "value": "{SPARK_CLUSTER_NAME}.{SPARK_USER}"
+          },
+          {
+            "name": "spark.metrics.conf.*.source.jvm.class",
+            "value": "org.apache.spark.metrics.source.JvmSource"
+          },
+          {
+            "name": "spark.metrics.appStatusSource.enabled",
+            "value": "true"
+          },
+          {
+            "name": "spark.executor.processTreeMetrics.enabled",
+            "value": "true"
+          }
+        ],
+        "cluster_filter": [],
+        "spark_version_filter": []
+      },
+     "S3Filesystem": {
+        "options": [
+            {
+              "name": "spark.hadoop.fs.s3a.impl",
+              "value": "org.apache.hadoop.fs.s3a.S3AFileSystem"
+            },
+            {
+              "name": "spark.hadoop.fs.s3a.endpoint",
+              "value": "https://s3.cern.ch"
+            },
+            {
+              "name": "spark.hadoop.fs.s3a.path.style.access",
+              "value": "true"
+            },
+            {
+              "name": "spark.hadoop.fs.s3a.fast.upload",
+              "value": "true"
+            },
+            {
+              "name": "spark.jars.packages",
+              "value": "org.apache.hadoop:hadoop-aws:3.3.2"
+            }
+        ],
+        "cluster_filter": [ "analytix", "hadoop-qa", "k8s", "hadoop-nxcals" ],
+        "spark_version_filter": []
+     },
+     "EOSFilesystem": {
+        "options": [
+          {
+            "name": "spark.executorEnv.KRB5CCNAME",
+            "value": "./krbcache"
+          },
+          {
+            "name": "spark.yarn.dist.files",
+            "value": "{KRB5CCNAME}#krbcache"
+          },
+          {
+            "name": "spark.driver.extraClassPath",
+            "value": "/cvmfs/sft.cern.ch/lcg/releases/hadoop_xrootd/1.0.7-e00b1/x86_64-centos7-gcc11-opt/lib/hadoop-xrootd.jar"
+          },
+          {
+            "name": "spark.executor.extraClassPath",
+            "value": "/cvmfs/sft.cern.ch/lcg/releases/hadoop_xrootd/1.0.7-e00b1/x86_64-centos7-gcc11-opt/lib/hadoop-xrootd.jar"
+          }
+        ],
+        "cluster_filter": [ "analytix", "hadoop-nxcals", "hadoop-qa" ],
+        "spark_version_filter": []
+      },
+      "PropagateUserPythonModules": {
+        "options": [
+          {
+            "name": "spark.cern.user.pyModules",
+            "value": "true"
+          }
+        ],
+        "cluster_filter": [ "analytix", "hadoop-nxcals", "hadoop-qa" ],
+        "spark_version_filter": []
+      },
+      "UseCVMFSJavaHomeOnExecutors": {
+        "options": [
+          {
+            "name": "spark.yarn.appMasterEnv.JAVA_HOME",
+            "value": "{JAVA_HOME}"
+          },
+          {
+            "name": "spark.executorEnv.JAVA_HOME",
+            "value": "{JAVA_HOME}"
+          }
+        ],
+        "cluster_filter": [ "analytix", "hadoop-qa" ],
+        "spark_version_filter": []
+      }
+    }
+  }
+  

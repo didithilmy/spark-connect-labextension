@@ -8,9 +8,11 @@ import { UIStore } from '../../store/UIStore';
 import ExtraConfig from '../configure/ExtraConfig';
 import { requestAPI } from '../../handler';
 import useStatus from '../../hooks/useStatus';
+import { SparkConfigBundle } from '../../types';
 
 const Configure: React.FC = () => {
   const clusterOptions = UIStore.useState(s => s.clusters).map(c => ({ label: c.displayName, value: c.name }));
+  const [selectionDisabled, setSelectionDisabled] = useState<boolean>(false);
 
   const [cluster, setCluster] = useState<{ label: String; value: string }>();
   const [selectedConfigBundles, setSelectedConfigBundles] = useState<string[]>([]);
@@ -18,6 +20,18 @@ const Configure: React.FC = () => {
 
   const activeNotebookPanel = UIStore.useState(s => s.activeNotebookPanel);
   const [notebookMetadata, setNotebookMetadata] = useState<any>();
+
+  const { data: status } = useStatus();
+  useEffect(() => {
+    const preselectedClusterName = status?.extensionConfig?.preselectedClusterName;
+    if (preselectedClusterName) {
+      const preselectedCluster = clusterOptions.find(s => s.value === preselectedClusterName);
+      setCluster(preselectedCluster);
+    }
+
+    const selectionDisabled = !!status?.extensionConfig?.disableClusterSelectionOnPreselected && !!preselectedClusterName;
+    setSelectionDisabled(selectionDisabled);
+  }, [status?.extensionConfig]);
 
   useEffect(() => {
     const model = activeNotebookPanel?.model;
@@ -36,7 +50,9 @@ const Configure: React.FC = () => {
 
   const loadConfigFromMetadata = () => {
     const cluster = clusterOptions.find(o => o.value === notebookMetadata.cluster_name);
-    setCluster(cluster);
+    if (!status?.extensionConfig.disableClusterSelectionOnPreselected || !status?.extensionConfig.preselectedClusterName) {
+      setCluster(cluster);
+    }
     setSelectedConfigBundles(notebookMetadata.bundled_options);
     setExtraConfig(
       notebookMetadata.list_of_options.reduce((acc: any, curr: any) => {
@@ -98,6 +114,49 @@ const Configure: React.FC = () => {
     });
   };
 
+  const viewAttachedConfiguration = () => {
+    const cluster = clusterOptions.find(o => o.value === notebookMetadata.cluster_name);
+    const enabledBundles: SparkConfigBundle[] = notebookMetadata.bundled_options?.map((o: string) => configBundles?.find(a => a.name === o));
+    const options = notebookMetadata.list_of_options;
+
+    showDialog({
+      title: 'Attached configuration',
+      buttons: [
+        {
+          label: 'Close',
+          caption: 'Close dialog',
+          className: '',
+          accept: false,
+          displayType: 'default',
+          ariaLabel: '',
+          iconClass: '',
+          iconLabel: '',
+          actions: []
+        }
+      ],
+      body: (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: 400 }}>
+          <div>
+            <div>Cluster name</div>
+            <small style={{ color: 'var(--jp-ui-font-color2)' }}>
+              {cluster?.label} ({cluster?.value})
+            </small>
+          </div>
+          <div>
+            <div>Enabled config bundles</div>
+            <small style={{ color: 'var(--jp-ui-font-color2)' }}>{enabledBundles.map(b => b.displayName).join(', ')}</small>
+          </div>
+          {options?.map((o: any) => (
+            <div>
+              <div>{o.name}</div>
+              <small style={{ color: 'var(--jp-ui-font-color2)' }}>{o.value}</small>
+            </div>
+          ))}
+        </div>
+      )
+    });
+  };
+
   const { mutate } = useStatus();
   const connect = () => {
     UIStore.update(s => {
@@ -131,25 +190,30 @@ const Configure: React.FC = () => {
         <SparkLogo />
         <h3 className="jp-SparkConnectExtension-heading">Connect to Cluster</h3>
       </div>
+      <Section title="Cluster" style={{ padding: 8 }} headingStyle={{ marginTop: 16 }}>
+        <Select isDisabled={selectionDisabled} options={clusterOptions} value={cluster} onChange={v => setCluster(v as any)} />
+      </Section>
       {!!notebookMetadata && (
-        <Section title="Attached Configuration" style={{ padding: 8 }} headingStyle={{ marginTop: 16 }}>
-          <div
-            onClick={loadConfigFromMetadata}
-            style={{ padding: 8, cursor: 'pointer', borderRadius: 'var(--jp-border-radius)', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8, color: 'var(--jp-info-color1)', border: '1px solid var(--jp-info-color1)' }}
-          >
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-              settings
-            </span>
-            <div>Load attached configuration</div>
+        <Section title="Attached Configuration" headingStyle={{ marginTop: 16 }}>
+          <div className="jp-SparkConnectExtension-menu-list">
+            <div onClick={viewAttachedConfiguration}>
+              <span className="material-symbols-outlined" style={{ fontSize: 18, color: 'var(--jp-ui-font-color2)' }}>
+                visibility
+              </span>
+              <div>View attached configuration</div>
+            </div>
+            <div onClick={loadConfigFromMetadata}>
+              <span className="material-symbols-outlined" style={{ fontSize: 18, color: 'var(--jp-ui-font-color2)' }}>
+                settings
+              </span>
+              <div>Load attached configuration</div>
+            </div>
           </div>
         </Section>
       )}
-      <Section title="Cluster" style={{ padding: 8 }} headingStyle={{ marginTop: 16 }}>
-        <Select options={clusterOptions} value={cluster} onChange={v => setCluster(v as any)} />
-      </Section>
       {!!cluster && (
         <>
-          <Section title="Configuration Bundle" headingStyle={{ marginTop: 8 }}>
+          <Section title="Configuration Bundle" headingStyle={{ marginTop: 16 }}>
             <ConfigBundle clusterName={cluster.value} selected={selectedConfigBundles} setSelected={setSelectedConfigBundles} />
           </Section>
           <Section title="Extra Configuration" headingStyle={{ marginTop: 16 }}>

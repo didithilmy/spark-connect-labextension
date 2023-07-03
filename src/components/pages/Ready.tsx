@@ -45,6 +45,37 @@ const Ready: React.FC = () => {
     };
   }, [activeNotebookPanel]);
 
+  const viewSparkOptions = () => {
+    const sparkOptions = data?.sparkOptions ?? {};
+    showDialog({
+      title: 'Spark options',
+      buttons: [
+        {
+          label: 'Close',
+          caption: 'Close dialog',
+          className: '',
+          accept: false,
+          displayType: 'default',
+          ariaLabel: '',
+          iconClass: '',
+          iconLabel: '',
+          actions: []
+        }
+      ],
+      body: (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, width: 400 }}>
+          {Object.keys(sparkOptions).length === 0 && <div>No configured options</div>}
+          {Object.keys(sparkOptions).map(option => (
+            <div>
+              <div>{option}</div>
+              <small style={{ color: 'var(--jp-ui-font-color2)' }}>{sparkOptions[option]}</small>
+            </div>
+          ))}
+        </div>
+      )
+    });
+  };
+
   const attachConfigToNotebook = () => {
     if (!data) return;
 
@@ -130,7 +161,7 @@ const Ready: React.FC = () => {
         </div>
       )}
       <Section title="Code" style={{ padding: 8 }} headingStyle={{ marginTop: 16 }}>
-        <p style={{ marginTop: 4, fontSize: 'var(--jp-ui-font-size1)' }}>Use this code to start using:</p>
+        <p style={{ marginTop: 4, fontSize: 'var(--jp-ui-font-size1)' }}>Use this code to create Spark Session:</p>
         <CodePreview />
       </Section>
       <Section title="Menu" headingStyle={{ marginTop: 16 }}>
@@ -146,6 +177,12 @@ const Ready: React.FC = () => {
               monitor_heart
             </span>
             <div>View logs</div>
+          </div>
+          <div onClick={viewSparkOptions}>
+            <span className="material-symbols-outlined" style={{ fontSize: 18, color: 'var(--jp-ui-font-color2)' }}>
+              settings
+            </span>
+            <div>View current Spark options</div>
           </div>
           {notebookConfigDiffers && (
             <div onClick={overrideNotebookConfig}>

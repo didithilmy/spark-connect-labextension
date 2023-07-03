@@ -26,12 +26,19 @@ export interface SparkConfigOption {
   name: string;
 }
 
+export interface ExtensionConfig {
+  preselectedClusterName?: string;
+  disableClusterSelectionOnPreselected: boolean;
+}
+
 export interface SparkClusterStatus {
   status: string;
   clusterName: string;
   port: number;
   configBundles: string[];
   extraConfig: { [key: string]: string };
+  sparkOptions: { [key: string]: string };
+  extensionConfig: ExtensionConfig;
 }
 
 export interface SparkClusterErrorSuggestion {

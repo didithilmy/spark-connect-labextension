@@ -16,6 +16,9 @@
         "--port=9999",
         "--JupyterApp.config_file=jupyter-config/server-config/spark_connect_labextension.json"
       ],
+      "env": {
+        "SPARK_CLUSTER_NAME": "analytix"
+      },
       "justMyCode": false,
       "module": "jupyterlab.labapp",
       "presentation": {
