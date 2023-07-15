@@ -9,6 +9,7 @@ from spark_connect_labextension.handlers.cluster.get_config_bundles import GetCo
 from spark_connect_labextension.handlers.cluster.get_config_options import GetConfigOptionsRouteHandler
 from spark_connect_labextension.handlers.ui_proxy_redirect import SparkUIProxyRedirectHandler
 from spark_connect_labextension.handlers.ui_proxy import SparkUIProxyHandler
+from spark_connect_labextension.handlers.remote_ui_proxy import RemoteUIProxyHandler
 from spark_connect_labextension.config import EXTENSION_ID
 
 
@@ -43,5 +44,6 @@ class SparkConnectExtensionApp(ExtensionApp):
             (f"{base_url}/ui", SparkUIProxyRedirectHandler),
             (f"{base_url}/ui/", SparkUIProxyRedirectHandler),
             (f"{base_url}/ui(?P<proxied_path>.*)", SparkUIProxyHandler),
+            (f"{base_url}/remote/(?P<host>[^/:@]+):(?P<port>\d+)(?P<proxied_path>/.*)", RemoteUIProxyHandler),
         ]
         self.handlers.extend(handlers)
