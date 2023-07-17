@@ -44,6 +44,6 @@ class SparkConnectExtensionApp(ExtensionApp):
             (f"{base_url}/ui", SparkUIProxyRedirectHandler),
             (f"{base_url}/ui/", SparkUIProxyRedirectHandler),
             (f"{base_url}/ui(?P<proxied_path>.*)", SparkUIProxyHandler),
-            (f"{base_url}/remote/(?P<host>[^/:@]+):(?P<port>\d+)(?P<proxied_path>/.*)", RemoteUIProxyHandler),
+            (f"{base_url}/remote/(?P<protocol>.+)/(?P<host>[^/:@]+):(?P<port>\d+)(?P<proxied_path>/.*)", RemoteUIProxyHandler),
         ]
         self.handlers.extend(handlers)
