@@ -96,6 +96,7 @@ class RemoteUIProxyHandler(ExtensionHandlerMixin, RemoteProxyHandler):
         # headers to see if and where they are being proxied from.
         if not self.absolute_url:
             context_path = self._get_context_path(protocol, host, port)
+            headers["Host"] = f"{host}:{port}"
             headers["X-Forwarded-Context"] = context_path
             headers["X-ProxyContextPath"] = context_path
             # to be compatible with flask/werkzeug wsgi applications
