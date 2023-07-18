@@ -30,8 +30,6 @@ class RemoteUIProxyHandler(ExtensionHandlerMixin, RemoteProxyHandler):
             uri = request.uri
             protocol, remote_host, path = self._parse_path(uri)
 
-            print(response.headers)
-
             if response.headers.get('Location'):
                 location = response.headers['Location']
                 location_parsed = urlparse(location)
