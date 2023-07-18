@@ -89,6 +89,7 @@ class RemoteUIProxyHandler(ExtensionHandlerMixin, RemoteProxyHandler):
     def _build_proxy_request(self, host, port, proxied_path, body):
         headers = self.proxy_request_headers()
         protocol, remote_host, path = self._parse_path(self.request.uri)
+        print(protocol, remote_host, path)
 
         client_uri = self.get_client_uri(protocol, host, port, proxied_path)
         # Some applications check X-Forwarded-Context and X-ProxyContextPath
@@ -111,7 +112,7 @@ class RemoteUIProxyHandler(ExtensionHandlerMixin, RemoteProxyHandler):
         return req
     
     def _parse_path(self, uri):
-        capture_group = url_path_join(self.base_url, EXTENSION_ID, 'remote', f"(.+)/(.+)(/.*)")
+        capture_group = url_path_join(self.base_url, EXTENSION_ID, 'remote', f"([^/:@]+)/([^/@]+)(/.*)")
         result = re.search(capture_group, uri)
         protocol = result.group(1)
         remote_host = result.group(2)
