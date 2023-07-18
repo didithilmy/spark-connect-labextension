@@ -38,12 +38,12 @@ class RemoteUIProxyHandler(ExtensionHandlerMixin, RemoteProxyHandler):
                 if location_parsed.netloc == '' or location_parsed.netloc == request.host:
                     if location_parsed.path.startswith('/'):
                         # Absolute URL, incomplete
-                        proxy_base = self._get_proxy_base(remote_host)
+                        proxy_base = self._get_proxy_base(protocol, remote_host)
                         location = proxy_base + location_parsed.path
                         
                 else:
                     # Full URL
-                    proxy_base = self._get_proxy_base(location_parsed.netloc)
+                    proxy_base = self._get_proxy_base(protocol, location_parsed.netloc)
                     path_q = [location_parsed.path]
                     if location_parsed.query:
                         path_q.append(location_parsed.query)
